@@ -2,8 +2,8 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
-const motoristaRoutes = require("./routes/motoristaRoutes");
-const pacoteRoutes = require("./routes/pacoteRoutes");
+const motoristaRoutes = require("./src/routes/motoristaRoutes");
+const pacoteRoutes = require("./src/routes/pacoteRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
