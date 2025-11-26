@@ -1,16 +1,25 @@
-// index.js
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv").config();
+
+const motoristaRoutes = require("./routes/motoristaRoutes");
+const pacoteRoutes = require("./routes/pacoteRoutes");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 app.use(cors());
 app.use(express.json());
 
-// rotas
-const apiRoutes = require("./src/routes/api");
-app.use("/", apiRoutes);
+// Rota raiz
+app.get("/", (req, res) => {
+  res.send("Backend rodando! Conexão com Neon OK.");
+});
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Backend rodando na porta ${PORT}`));
+// Rotas
+app.use("/", motoristaRoutes);
+app.use("/", pacoteRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
