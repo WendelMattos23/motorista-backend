@@ -6,7 +6,11 @@ const pool = require("../db");
 router.get("/pacotes", async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT p.id, p.codigo, m.nome AS motorista
+      SELECT 
+        p.id, 
+        p.codigo, 
+        p.empresa,
+        m.nome AS motorista
       FROM pacotes_bipados p
       LEFT JOIN motoristas m ON p.motorista_id = m.id
       ORDER BY p.id DESC
@@ -19,16 +23,16 @@ router.get("/pacotes", async (req, res) => {
   }
 });
 
-// Bipar pacote e associar motorista (SITE)
+// Bipar pacote e associar motorista + empresa (SITE)
 router.post("/pacote", async (req, res) => {
-  const { codigo, motorista_id } = req.body;
+  const { codigo, motorista_id, empresa } = req.body;
 
   try {
     const result = await pool.query(
-      `INSERT INTO pacotes_bipados (codigo, motorista_id)
-       VALUES ($1, $2)
-       RETURNING id, codigo, motorista_id`,
-      [codigo, motorista_id]
+      `INSERT INTO pacotes_bipados (codigo, motorista_id, empresa)
+       VALUES ($1, $2, $3)
+       RETURNING id, codigo, motorista_id, empresa`,
+      [codigo, motorista_id, empresa]
     );
 
     res.json(result.rows[0]);

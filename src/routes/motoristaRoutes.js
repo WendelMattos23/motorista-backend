@@ -58,13 +58,11 @@ router.get("/motorista/:id/pacotes", async (req, res) => {
 
   try {
     const result = await pool.query(
-      `
-      SELECT id, codigo, empresa
-      FROM pacotes_bipados
-      WHERE motorista_id = $1
-      AND ($2::text IS NULL OR empresa = $2)
-      ORDER BY id DESC
-      `,
+      `SELECT id, codigo, empresa 
+       FROM pacotes_bipados
+       WHERE motorista_id = $1
+       AND ($2::varchar IS NULL OR empresa = $2)
+       ORDER BY id DESC`,
       [id, empresa || null]
     );
 
@@ -74,6 +72,7 @@ router.get("/motorista/:id/pacotes", async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar pacotes do motorista" });
   }
 });
+
 
 
 module.exports = router;
