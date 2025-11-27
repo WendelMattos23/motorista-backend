@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 
-// Listar todos os pacotes bipados
+// Listar pacotes bipados
 router.get("/pacotes", async (req, res) => {
   try {
     const result = await pool.query(`
@@ -18,7 +18,7 @@ router.get("/pacotes", async (req, res) => {
   }
 });
 
-// Atualizar entrega de um pacote
+// Atualizar pacote
 router.put("/pacote/:id", async (req, res) => {
   const { id } = req.params;
   const { entregue, motorista_id } = req.body;
@@ -31,6 +31,7 @@ router.put("/pacote/:id", async (req, res) => {
        RETURNING *`,
       [entregue, motorista_id || null, id]
     );
+
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err);
