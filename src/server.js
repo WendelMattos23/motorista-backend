@@ -1,15 +1,13 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
 
-import devolucoesRoutes from "./routes/devolucoes.routes";
-import motoristasRoutes from "./routes/motorista.routes";
-import pacotesRoutes from "./routes/pacotes.routes";
-import distribuir from "./routes/distribuicoes.routes";
-import empresa from "./routes/empresa.routes";
-import motoristasAuth from "./routes/motoristasAuth.js";
-
-
+const devolucoesRoutes = require("./routes/devolucoes.routes");
+const motoristasRoutes = require("./routes/motorista.routes");
+const pacotesRoutes = require("./routes/pacotes.routes");
+const distribuir = require("./routes/distribuicoes.routes");
+const empresa = require("./routes/empresa.routes");
+const motoristasAuth = require("./routes/motoristasAuth");
 
 dotenv.config();
 
@@ -24,7 +22,6 @@ app.use("/api", distribuir);
 app.use("/api", empresa);
 app.use("/api", devolucoesRoutes);
 app.use("/api", motoristasAuth);
-
 
 app.get("/", (_req, res) => {
   res.send("API rodando 🟢");
