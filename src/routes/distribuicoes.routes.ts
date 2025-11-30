@@ -3,61 +3,37 @@ import { pool } from "../db/db";
 
 const router = Router();
 
-router.post("/", async (req, res) => {
-  const { motoristaId, empresaId, pacotes } = req.body;
+/* 🚚 LISTAR MOTORISTAS PARA DISTRIBUIÇÃO */
+router.get("/motoristas-operacionais", async (_req, res) => {
+  const { rows } = await pool.query(`
+    SELECT 
+      mo.id,
+      mo.nome,
+      e.nome AS empresa
+    FROM motoristas_operacionais mo
+    JOIN empresas e ON e.id = mo.empresa_id
+    WHERE mo.ativo = true
+    ORDER BY mo.nome
+  `);
 
-  const client = await pool.connect();
+  res.json(rows);
+});
 
-  try {
-    await client.query("BEGIN");
 
-    const distribRes = await client.query(
-      `INSERT INTO distribuicoes (motorista_id, empresa_id)
-       VALUES ($1, $2)
-       RETURNING id`,
-      [motoristaId, empresaId]
-    );
+/* 🔗 VINCULAR MOTORISTA DO APP */
+router.post("/motoristas-operacionais/vincular", async (req, res) => {
+  const { motorista_operacional_id, motorista_cad_id } = req.body;
 
-    const distribuicaoId = distribRes.rows[0].id;
+  await pool.query(
+    `
+    UPDATE motoristas_operacionais
+    SET motorista_cad_id = $1
+    WHERE id = $2
+    `,
+    [motorista_cad_id, motorista_operacional_id]
+  );
 
-    for (const codigo of pacotes) {
-      const pacoteRes = await client.query(
-        "SELECT id, status FROM pacotes WHERE codigo = $1",
-        [codigo]
-      );
-
-      if (!pacoteRes.rows.length) {
-        throw new Error(`Pacote ${codigo} não existe`);
-      }
-
-      if (pacoteRes.rows[0].status !== "na_base") {
-        throw new Error(`Pacote ${codigo} não disponível`);
-      }
-
-      const pacoteId = pacoteRes.rows[0].id;
-
-      await client.query(
-        `INSERT INTO distribuicao_pacotes (distribuicao_id, pacote_id)
-         VALUES ($1, $2)`,
-        [distribuicaoId, pacoteId]
-      );
-
-      await client.query(
-        "UPDATE pacotes SET status = 'distribuido' WHERE id = $1",
-        [pacoteId]
-      );
-    }
-
-    await client.query("COMMIT");
-
-    res.json({ success: true });
-
-  } catch (error: any) {
-    await client.query("ROLLBACK");
-    res.status(400).json({ error: error.message });
-  } finally {
-    client.release();
-  }
+  res.json({ sucesso: true });
 });
 
 export default router;
