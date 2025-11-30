@@ -12,6 +12,8 @@ app.use("/api", require("./src/routes/distribuicoes.routes"));
 app.use("/api", require("./src/routes/pacotes.routes"));
 app.use("/api", require("./src/routes/devolucoes.routes"));
 app.use("/api", require("./src/routes/empresa.routes"));
+app.use("/api", require("./src/routes/dashboard.routes"));
+
 
 
 
