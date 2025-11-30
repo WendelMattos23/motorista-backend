@@ -7,6 +7,9 @@ import motoristasRoutes from "./routes/motorista.routes";
 import pacotesRoutes from "./routes/pacotes.routes";
 import distribuir from "./routes/distribuicoes.routes";
 import empresa from "./routes/empresa.routes";
+import motoristasAuth from "./routes/motoristasAuth.js";
+
+
 
 dotenv.config();
 
@@ -20,6 +23,8 @@ app.use("/api", pacotesRoutes);
 app.use("/api", distribuir);
 app.use("/api", empresa);
 app.use("/api", devolucoesRoutes);
+app.use("/api", motoristasAuth);
+
 
 app.get("/", (_req, res) => {
   res.send("API rodando 🟢");
